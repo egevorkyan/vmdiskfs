@@ -1,7 +1,8 @@
 package object_storage
 
 import (
-	"github.com/minio/minio-go"
+	"context"
+	"github.com/minio/minio-go/v7"
 	"go/types"
 	"log"
 	"os"
@@ -24,10 +25,10 @@ func Uploader(useSSL bool, filename string) (string, int64, bool, error) {
 	if err != nil {
 		log.Println(err)
 	}
-	n, err := s3Client.PutObject(bucket, objectStat.Name(), object, objectStat.Size(), minio.PutObjectOptions{ContentType: "application/octet-stream"})
+	n, err := s3Client.PutObject(context.Background(), bucket, objectStat.Name(), object, objectStat.Size(), minio.PutObjectOptions{ContentType: "application/octet-stream"})
 	if err != nil {
-		return targetFile, n, false, err
+		return targetFile, n.Size, false, err
 	} else {
-		return targetFile, n, true, types.Error{}
+		return targetFile, n.Size, true, types.Error{}
 	}
 }

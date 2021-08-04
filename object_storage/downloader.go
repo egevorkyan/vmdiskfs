@@ -1,7 +1,8 @@
 package object_storage
 
 import (
-	"github.com/minio/minio-go"
+	"context"
+	"github.com/minio/minio-go/v7"
 	"go/types"
 	"io"
 	"log"
@@ -11,7 +12,7 @@ import (
 // Downloader file from bucket
 func Downloader(useSSL bool, bucket string, filename string) (int64, bool, error) {
 	s3Client := ObjectStorageProvider(useSSL)
-	reader, err := s3Client.GetObject(bucket, filename, minio.GetObjectOptions{})
+	reader, err := s3Client.GetObject(context.Background(), bucket, filename, minio.GetObjectOptions{})
 	if err != nil {
 		log.Println(err)
 	}

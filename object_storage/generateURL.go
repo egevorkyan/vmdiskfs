@@ -1,6 +1,7 @@
 package object_storage
 
 import (
+	"context"
 	"go/types"
 	"net/url"
 	"time"
@@ -16,7 +17,7 @@ func GenerateUrl(useSSL bool, bucket string, filename string) (*url.URL, bool, e
 	s3Client := ObjectStorageProvider(useSSL)
 
 	// Generate a pre-signed url with expiration 1 day
-	preSignedURL, err := s3Client.PresignedGetObject(bucket, filename, expiry, reqParams)
+	preSignedURL, err := s3Client.PresignedGetObject(context.Background(), bucket, filename, expiry, reqParams)
 	if err != nil {
 		return &url.URL{}, false, err
 	} else {

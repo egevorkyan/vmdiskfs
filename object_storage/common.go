@@ -4,7 +4,8 @@ import (
 	"bufio"
 	"bytes"
 	"encoding/json"
-	"github.com/minio/minio-go"
+	"github.com/minio/minio-go/v7"
+	"github.com/minio/minio-go/v7/pkg/credentials"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
 	"log"
@@ -20,7 +21,12 @@ func ObjectStorageProvider(useSSL bool) *minio.Client {
 	accessKeyID := os.Getenv("AWS_ACCESS_KEY_ID")
 	secretAccessKey := os.Getenv("AWS_SECRET_ACCESS_KEY")
 
-	provider, err := minio.New(endpoint, accessKeyID, secretAccessKey, useSSL)
+	minioOpts := &minio.Options{
+		Creds:  credentials.NewStaticV4(accessKeyID, secretAccessKey, ""),
+		Secure: useSSL,
+	}
+
+	provider, err := minio.New(endpoint, minioOpts)
 	if err != nil {
 		log.Println(err)
 	}
